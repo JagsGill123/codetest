@@ -13,8 +13,10 @@ How to run:
     * site should be available at http://localhost:8000   
     
     
-
-
+Dependencies:
+    
+   * php7.1 fpm
+   * mysql 5.7
 
 Docker environment for a Symfony4 project
 ==================================
