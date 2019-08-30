@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Country{% endblock %}
+
+{% block body %}
+    <h1></h1>
+
+    {{ include('country/_form.html.twig') }}
+
+    <table id="countryTable" class="table table-dark">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Country Name</th>
+            <th scope="col">International Dialing Code</th>
+            <th scope="col">Region</th>
+            <th scope="col">Capital</th>
+            <th scope="col">Timezone</th>
+            <th scope="col">List of currencies used</th>
+            <th scope="col">Image of flag</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+
+    <span id="response"></span>
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+    <script type="text/javascript">
+        $(function () {
+            // Variable to hold request
+            var request;
+
+            // Bind to the submit event of our form
+            $("[name='country_search']").submit(function (event) {
+
+                // Prevent default posting of form - put here to work in case of errors
+                event.preventDefault();
+
+                // Abort any pending request
+                if (request) {
+                    request.abort();
+                }
+                // setup some local variables
+                var $form = $(this);
+
+                // Let's select and cache all the fields
+                var $inputs = $form.find("input, select, button, textarea");
+
+                // Serialize the data in the form
+                var serializedData = $form.serialize();
+
+                // Let's disable the inputs for the duration of the Ajax request.
+                // Note: we disable elements AFTER the form data has been serialized.
+                // Disabled form elements will not be serialized.
+                $inputs.prop("disabled", true);
+
+                // Fire off the request to /form.php
+                request = $.ajax({
+                    url: "",
+                    type: "post",
+                    data: serializedData
+                });
+
+                // Callback handler that will be called on success
+                request.done(function (response, textStatus, jqXHR) {
+                    // $("span#response").text('AJAX Response: ' + response);
+
+                    displayList(response['data']);
+
+                });
+
+                // Callback handler that will be called on failure
+                request.fail(function (jqXHR, textStatus, errorThrown) {
+                    // Log the error to the console
+                    console.error(
+                        "The following error occurred: " +
+                        textStatus, errorThrown
+                    );
+                });
+
+                // Callback handler that will be called regardless
+                // if the request failed or succeeded
+                request.always(function () {
+                    // Reenable the inputs
+                    $inputs.prop("disabled", false);
+                });
+
+                var displayList = function (data) {
+                    // clear table
+                    $('#countryTable tbody').empty();
+                    var tbody = $("table tbody");
+
+                    // loop through data and add rows
+                    $.each(data, function (key, value) {
+                        console.log(key);
+                        console.log(value);
+
+                        var name = value['name'],
+                            region = value['region'],
+                            countryCode = value['countryCode'],
+                            timezone = value['timezone'],
+                            currencies = value['currencies'],
+                            dialingCodes = value['dialingCodes'],
+                            flag = value['flag'],
+                            capital = value['capital'];
+
+                        var row = '<tr>' +
+                            '<th scope="row">' + key + '</th>' +
+                            '<td >' + name + '</td>' +
+                            '<td >' + dialingCodes + '</td>' +
+                            '<td >' + region + '</td>' +
+                            '<td >' + capital + '</td>' +
+                            '<td >' + timezone + '</td>' +
+                            '<td >' + currencies + '</td>' +
+                            '<td >' + flag + '</td>' +
+                            "</tr>";
+                        tbody.append(row);
+
+                    });
+
+                };
+
+            });
+        });
+    </script>
+
+{% endblock %}
