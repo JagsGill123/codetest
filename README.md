@@ -1,3 +1,21 @@
+Docker environment for a Country Code Test
+==================================
+
+How to run:
+
+  * Clone Project
+  * Ensure docker installed and run 
+    *  `docker-compose build` from /application
+    *  `docker-compose up -d` from /application
+    *  enter docker container using `docker exec -it docker-symfony4-php-fpm sh`
+        * and run `composer install`
+        * and create db with `php bin/console make:migration` or  `php bin/console doctrine:migrations:migrate`
+    * site should be available at http://localhost:8000   
+    
+    
+
+
+
 Docker environment for a Symfony4 project
 ==================================
 
